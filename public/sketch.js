@@ -1,96 +1,79 @@
 import { readFileSync } from "fs";
 import npyjs from "npyjs";
+import p5 from "p5";
 
-const npyFilePath = "recording1-1fr.npy"; // Replace with your file path
+const npyFilePath = "recording1-1fr.npy";
 
+// Read the .npy file as a Buffer
+const data = readFileSync(npyFilePath);
+
+// Create an instance of NpyJs and parse the data
+const npy = new npyjs();
+const npyData = npy.parse(data.buffer);
+const myArray = npyData.data;
+
+// Ensure npyData contains a Uint8Array / Test it can read the values
 try {
-  // Read the .npy file as a Buffer
-  const data = readFileSync(npyFilePath);
+  if (npyData.data instanceof Uint8Array) {
 
-  // Create an instance of NpyJs and parse the data
-  const npy = new npyjs();
-  const npyData = npy.parse(data.buffer);
+    // Initialize counters for 0s and 1s
+    let numberOfZeros = 0;
+    let numberOfOnes = 0;
 
-  // Now you can work with npyData (the parsed data)
-  console.log(npyData);
+    // Iterate through the Uint8Array and count 0s and 1s
+    for (let i = 0; i < myArray.length; i++) {
+      if (myArray[i] === 0) {
+        numberOfZeros++;
+      } else if (myArray[i] === 1) {
+        numberOfOnes++;
+      }
+    }
 
-  const numberOfZeros = Array.from(npyData).reduce((count, value) => {
-    return count + (value === 0 || value === "0" ? 1 : 0);
-  }, 0);
-  console.log(
-    `Number of 0s in npyData: ${numberOfZeros}`
-  );
+    console.log(`Number of 0s: ${numberOfZeros}`);
+    console.log(`Number of 1s: ${numberOfOnes}`);
 
+  } else {
+    console.error("npyData.data is not a Uint8Array");
+  }
 } catch (err) {
   console.error("Error reading the .npy file:", err);
 }
 
-// let jsonData;
-// let myArray; // Declare the variable to hold the loaded JSON data
+// Define a function to be called when p5.js is ready
+// function sketch(p) {
+//   p.setup = function () {
+//     p.createCanvas(400, 400);
+//     // Use the npyDataArray in your setup function
+//     console.log("Hello");
+//     // You can now work with npyDataArray within your p5.js sketch
+//   };
 
-// function preload() {
-//   // Load the JSON file
-//   loadJSON("../utilities/recordings/test.json", loadData);
-// }
-
-// function loadData(data) {
-//   // This function is called when the JSON data is loaded and ready
-//   myArray = data;
-//   console.log("JSON data loaded:", myArray);
-
-//   // Call setup after loading the data
-//   setup();
-// }
-
-// function setup() {
-//   if (!myArray) {
-//     // Data hasn't loaded yet, exit setup
-//     return;
-//   }
-
-//   let numRows = myArray[0].length;
-//   let numCols = myArray[0][0].length;
-//   let cellSize = 1; // Adjust this as needed
-//   createCanvas(numCols * cellSize, numRows * cellSize);
-
-//   noStroke();
-
-//   for (let i = 0; i < numRows; i++) {
-//     for (let j = 0; j < numCols; j++) {
-//       let colorValue = parseInt(myArray[0][i][j]); // Assuming the value 1 corresponds to blue
-
-//       let fillColor = color(colorValue * 255, 0, (1 - colorValue) * 255);
-//       fill(fillColor);
-
-//       rect(j * cellSize, i * cellSize, cellSize, cellSize);
-//     }
+//   p.draw = function () {
+//     background(51);
 //   }
 // }
 
-// function draw() {
-//   // Your draw code
-// }
+// // Create a new p5 instance with your sketch function
+// new p5(sketch);
 
-// // !! setup / draw split -- WORKS!!
-// let jsonData;
-// let myArray; // Declare the variable to hold the loaded JSON data
+
+new p5((p) => {
+  p.setup = () => {
+    p.createCanvas(400, 400);
+    p.background(220);
+  };
+
+  p.draw = () => {
+    p.ellipse(50, 50, 50, 50);
+  };
+});
+
+/// CANVAS
 // let numRows, numCols, cellSize;
-
-// function preload() {
-//   // Load the JSON file
-//   loadJSON("../utilities/recordings/test.json", loadData);
-// }
-
-// function loadData(data) {
-//   // This function is called when the JSON data is loaded and ready
-//   myArray = data;
-//   console.log("JSON data loaded:", myArray);
-
-//   // Call setup after loading the data
-//   setup();
-// }
+// let fillColors = []; // Define custom fill colors for each cell
 
 // function setup() {
+
 //   if (!myArray) {
 //     // Data hasn't loaded yet, exit setup
 //     return;
@@ -98,10 +81,20 @@ try {
 
 //   numRows = myArray[0].length;
 //   numCols = myArray[0][0].length;
-//   cellSize = 1; // Adjust this as needed
+//   cellSize = 20; // Adjust this as needed
 //   createCanvas(numCols * cellSize, numRows * cellSize);
 //   noLoop(); // Disable automatic redraw
-//   noStroke();
+
+//   noStroke(); // Remove stroke (border) around the rectangles
+
+//   // Define custom fill colors for each cell
+//   for (let i = 0; i < numRows; i++) {
+//     fillColors[i] = []; // Initialize an empty array for each row
+//     for (let j = 0; j < numCols; j++) {
+//       // Set custom fill colors for each cell here
+//       fillColors[i][j] = color(random(255), random(255), random(255)); // Random color for each cell
+//     }
+//   }
 
 //   // You can call draw once to draw the initial state
 //   draw();
@@ -116,99 +109,9 @@ try {
 
 //   for (let i = 0; i < numRows; i++) {
 //     for (let j = 0; j < numCols; j++) {
-//       let colorValue = parseInt(myArray[0][i][j]); // Assuming the value 1 corresponds to blue
+//       // Get the custom fill color for each cell
+//       fill(fillColors[i][j]);
 
-//       let fillColor = color(colorValue * 255, 0, (1 - colorValue) * 255);
-//       fill(fillColor);
-
-//       rect(j * cellSize, i * cellSize, cellSize, cellSize);
-//     }
-//   }
-// }
-
-let jsonData;
-let myArray; // Declare the variable to hold the loaded JSON data
-let numRows, numCols, cellSize;
-let fillColors = []; // Define custom fill colors for each cell
-
-function preload() {
-  // Load the JSON file
-  loadJSON("../utilities/recordings/test.json", loadData);
-}
-
-function loadData(data) {
-  // This function is called when the JSON data is loaded and ready
-  myArray = data;
-  console.log("JSON data loaded:", myArray);
-
-  // Call setup after loading the data
-  setup();
-}
-
-function setup() {
-  if (!myArray) {
-    // Data hasn't loaded yet, exit setup
-    return;
-  }
-
-  numRows = myArray[0].length;
-  numCols = myArray[0][0].length;
-  cellSize = 20; // Adjust this as needed
-  createCanvas(numCols * cellSize, numRows * cellSize);
-  noLoop(); // Disable automatic redraw
-
-  noStroke(); // Remove stroke (border) around the rectangles
-
-  // Define custom fill colors for each cell
-  for (let i = 0; i < numRows; i++) {
-    fillColors[i] = []; // Initialize an empty array for each row
-    for (let j = 0; j < numCols; j++) {
-      // Set custom fill colors for each cell here
-      fillColors[i][j] = color(random(255), random(255), random(255)); // Random color for each cell
-    }
-  }
-
-  // You can call draw once to draw the initial state
-  draw();
-}
-
-function draw() {
-  // Your draw code
-  if (!myArray) {
-    // Data hasn't loaded yet, exit draw
-    return;
-  }
-
-  for (let i = 0; i < numRows; i++) {
-    for (let j = 0; j < numCols; j++) {
-      // Get the custom fill color for each cell
-      fill(fillColors[i][j]);
-
-      rect(j * cellSize, i * cellSize, cellSize, cellSize);
-    }
-  }
-}
-
-// !! Test data and function (WORKS)
-// let myArray = [
-//   [
-//     [1, 0, 1],
-//     [0, 1, 0],
-//     [1, 0, 1],
-//   ],
-// ];
-
-// function setup() {
-//   let numRows = myArray[0].length;
-//   let numCols = myArray[0][0].length;
-//   let cellSize = 50; // Adjust this as needed
-//   createCanvas(numCols * cellSize, numRows * cellSize);
-
-//   for (let i = 0; i < numRows; i++) {
-//     for (let j = 0; j < numCols; j++) {
-//       let colorValue = myArray[0][i][j]; // Assuming the value 1 corresponds to blue
-//       let fillColor = color(colorValue * 255, 0, (1 - colorValue) * 255);
-//       fill(fillColor);
 //       rect(j * cellSize, i * cellSize, cellSize, cellSize);
 //     }
 //   }
