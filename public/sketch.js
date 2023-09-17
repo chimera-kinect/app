@@ -1,43 +1,25 @@
-import { readFileSync } from "fs";
-import npyjs from "npyjs";
-import p5 from "p5";
+// import { readNpyFile } from "./read_data.js";
 
-const npyFilePath = "recording1-1fr.npy";
+let myArray;
 
-// Read the .npy file as a Buffer
-const data = readFileSync(npyFilePath);
+function setup() {
+createCanvas(400, 400);
+background(55);
 
-// Create an instance of NpyJs and parse the data
-const npy = new npyjs();
-const npyData = npy.parse(data.buffer);
-const myArray = npyData.data;
+// myArray = await readNpyFile("recording1-1fr.npy");
 
-// Ensure npyData contains a Uint8Array / Test it can read the values
-try {
-  if (npyData.data instanceof Uint8Array) {
-
-    // Initialize counters for 0s and 1s
-    let numberOfZeros = 0;
-    let numberOfOnes = 0;
-
-    // Iterate through the Uint8Array and count 0s and 1s
-    for (let i = 0; i < myArray.length; i++) {
-      if (myArray[i] === 0) {
-        numberOfZeros++;
-      } else if (myArray[i] === 1) {
-        numberOfOnes++;
-      }
-    }
-
-    console.log(`Number of 0s: ${numberOfZeros}`);
-    console.log(`Number of 1s: ${numberOfOnes}`);
-
-  } else {
-    console.error("npyData.data is not a Uint8Array");
+  if (myArray) {
+    console.log(myArray);
   }
-} catch (err) {
-  console.error("Error reading the .npy file:", err);
 }
+
+function draw() {
+  ellipse(50, 50, 50, 50);
+}
+
+// import { readFileSync } from "fs";
+// import npyjs from "npyjs";
+//import p5 from "p5";
 
 // Define a function to be called when p5.js is ready
 // function sketch(p) {
@@ -55,18 +37,8 @@ try {
 
 // // Create a new p5 instance with your sketch function
 // new p5(sketch);
+//---
 
-
-new p5((p) => {
-  p.setup = () => {
-    p.createCanvas(400, 400);
-    p.background(220);
-  };
-
-  p.draw = () => {
-    p.ellipse(50, 50, 50, 50);
-  };
-});
 
 /// CANVAS
 // let numRows, numCols, cellSize;
