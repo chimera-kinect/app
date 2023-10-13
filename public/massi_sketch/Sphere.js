@@ -27,16 +27,16 @@ export default class Sphere {
 
     // Check for collision with canvas boundaries
     if (this.x - this.size * 1.1 < -width / 2 || this.x + this.size * 1.1 > width / 2) {
-      this.vx *= -1 // Reverse x-velocity to bounce
+      this.vx = -this.vx // Reverse x-velocity to bounce
     }
 
     if (this.y - this.size * 1.1 < -height / 2 || this.y + this.size * 1.1 > height / 2) {
-      this.vy *= -1 // Reverse y-velocity to bounce
+      this.vy = -this.vy // Reverse y-velocity to bounce
     }
 
     // Check for collisions with other spheres
-    for (let otherSphere of spheres) {
-      if (otherSphere === this) continue
+    spheres.forEach(otherSphere => {
+      if (otherSphere === this) return
 
       const dx = otherSphere.x - this.x
       const dy = otherSphere.y - this.y
@@ -65,6 +65,6 @@ export default class Sphere {
         otherSphere.vx += impulse.x / otherSphere.size
         otherSphere.vy += impulse.y / otherSphere.size
       }
-    }
+    })
   }
 }

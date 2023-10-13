@@ -41,7 +41,7 @@ function draw() {
   let locX = mouseX - width / 2
   let locY = mouseY - height / 2
   pointLight(250, 250, 250, locX, locY, 100)
-  ambientLight(30)
+  // ambientLight(30)
 }
 
 // DEBUG
