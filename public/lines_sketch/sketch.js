@@ -1,4 +1,7 @@
-let radiusSlider
+import VerticalLine from "./VerticalLine.js"
+
+let radiusSlider, curveCheckbox
+const lines = []
 
 function setup() {
   createCanvas(1002, 658)
@@ -6,23 +9,20 @@ function setup() {
   radiusSlider = createSlider(10, 300, 100)
   radiusSlider.position(1012, 10)
   radiusSlider.style('width', '80px')
+  curveCheckbox = createCheckbox('use curves', false)
+  curveCheckbox.position(1012, 40)
+  for (let x = 1; x < width; x += 20) {
+    lines.push(new VerticalLine(x))
+  }
+  stroke(255)
+  noFill()
 }
 
 function draw() {
   background(0)
-  stroke(255)
-  noFill()
-  for (let x = 20; x < width; x += 20) {
-    beginShape()
-    vertex(x, 0)
-    for (let y = 0; y <= height; y += random(10, 20)) {
-      let xOffset = dist(mouseX, mouseY, x, y) < radiusSlider.value() ? random(-5, 5) : random(-1, 1)
-      vertex(x + xOffset, y)
-    }
-    vertex(x, height)
-    endShape()
-  }
+  lines.forEach(line => line.draw(radiusSlider.value(), curveCheckbox.checked()))
 }
+
 
 window.setup = setup
 window.draw = draw
