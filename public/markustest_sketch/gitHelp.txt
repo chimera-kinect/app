@@ -1,0 +1,21 @@
+_Finished up?
+
+git add markustest_sketch (add folder ex) / git add . (add all)
+git commit -m "describe whats done"
+git push
+
+_Want to add changes to main? (you should once you've reached a milsestone)
+Go to git and open pull request
+Merge once approved by reviewer
+Go back to VS then
+git pull (on main branch)
+
+_Make new branch to start new task:
+git checkout -b "name of my new branch"
+
+_Repeat
+
+_in doubt?
+git status - shows what's up with git changes
+git branch - shows current branch
+ls - shows folder available for cd command
