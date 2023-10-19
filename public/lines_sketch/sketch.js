@@ -1,14 +1,14 @@
 import VerticalLine from "./VerticalLine.js"
+import kinectManager from '../utils/KinectManager.js'
 
-let radiusSlider, curveCheckbox
+let curveCheckbox
 const lines = []
 
 function setup() {
-  createCanvas(1002, 658)
+  createCanvas(windowWidth, windowHeight)
+  kinectManager.updateCanvasSize()
+  kinectManager.pushThreshold = 40
   frameRate(60)
-  radiusSlider = createSlider(10, 300, 100)
-  radiusSlider.position(1012, 10)
-  radiusSlider.style('width', '80px')
   curveCheckbox = createCheckbox('use curves', false)
   curveCheckbox.position(1012, 40)
   for (let x = 1; x < width; x += 20) {
@@ -19,10 +19,17 @@ function setup() {
 }
 
 function draw() {
+  if (!kinectManager.firstFrameReceived) return
   background(0)
-  lines.forEach(line => line.draw(radiusSlider.value(), curveCheckbox.checked()))
+  lines.forEach(line => line.draw(curveCheckbox.checked(), kinectManager))
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight)
+  kinectManager.updateCanvasSize()
 }
 
 
 window.setup = setup
 window.draw = draw
+window.windowResized = windowResized
