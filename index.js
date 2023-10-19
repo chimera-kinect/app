@@ -3,7 +3,7 @@ const path = require('path')
 const fs = require('fs')
 
 const app = express()
-const port = 5000
+const port = 6372
 
 // Find all directories in the 'public' folder
 const publicPath = path.join(__dirname, 'public')
