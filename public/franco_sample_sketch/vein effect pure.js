@@ -43,19 +43,19 @@ function mouseReleased() {
 class Vein {
   constructor(x, y, branchCount) {
     this.points = [];
-    this.numPoints = floor(random(500, 750));
+    this.numPoints = floor(random(10, 20));
     this.points.push(createVector(x, y));
     this.angle = random(TWO_PI);
     this.speed = random(5, 10);
     this.branchCount = branchCount;
     this.maxBranches = 10;
-    this.branchChance = 0.2;
+    this.branchChance = 0.3;
     this.lifespan = 60;
     this.retracting = false;
   }
 
   update() {
-    if (this.lifespan <= 0 || this.lifespan > 90) {
+    if (this.lifespan < 0) {
       this.lifespan = 0;
     }
 
@@ -74,6 +74,8 @@ class Vein {
         let branch = new Vein(lastPoint.x, lastPoint.y, this.branchCount + 1);
         branch.angle = this.angle + branchAngle;
         branch.speed = branchSpeed;
+        branch.lifespan = this.lifespan
+        branch.branchChance = this.branchChance / 2
         veins.push(branch);
       }
 

@@ -1,9 +1,13 @@
+import kinectManager from '../utils/KinectManager.js'
+
 let veins = [];
 let isMousePressed = false;
 let stars = [];
 
 function setup() {
   createCanvas(1280, 720);
+  kinectManager.updateCanvasSize()
+  kinectManager.pushThreshold = 100
   frameRate(60);
 
   // Generate random stars
@@ -13,6 +17,7 @@ function setup() {
 }
 
 function draw() {
+  if (!kinectManager.firstFrameReceived) return
   background(0); // Set a dark background.
 
   // Display stars
@@ -21,10 +26,10 @@ function draw() {
   for (let star of stars) {
     ellipse(star.x, star.y, 5, 5);
   }
-
+  checkPushes()
   // Update and display veins
   for (let i = veins.length - 1; i >= 0; i--) {
-    if (isMousePressed) {
+    if (kinectManager.isCoordinatePushed(veins[i].points[0].x, veins[i].points[0].y)) {
       // Find the nearest star-like particle and make the vein gravitate towards it.
       let nearestStar = findNearestStar(veins[i].points[veins[i].points.length - 1]);
       if (nearestStar) {
@@ -57,6 +62,23 @@ function mouseReleased() {
   isMousePressed = false;
 }
 
+function checkPushes () {
+  if (veins.length === 2) return
+  for (let x = 0; x <= width; x += random(10, 20)) {
+    for (let y = 0; y <= height; y += random(10, 20)) {
+      if (kinectManager.isCoordinatePushed(x, y)) {
+        if (veins.length === 1) if (dist(x, y, veins[0].points[0].x, veins[0].points[0].y) < 300) continue
+        if (veins.length < 2) {
+          let vein = new Vein(x, y, 0);
+          veins.push(vein)
+          break
+        }
+      }
+    }
+    if (veins.length === 2) break
+  }
+}
+
 class Vein {
   // (Your existing Vein class with some modifications for gravitation)
   constructor(x, y, branchCount) {
@@ -64,10 +86,10 @@ class Vein {
     this.numPoints = floor(random(500, 750));
     this.points.push(createVector(x, y));
     this.angle = random(TWO_PI);
-    this.speed = random(5, 10);
+    this.speed = random(3, 7);
     this.branchCount = branchCount;
-    this.maxBranches = 4;
-    this.branchChance = 0.2;
+    this.maxBranches = 3;
+    this.branchChance = 0.3;
     this.lifespan = 60;
     this.retracting = false;
   }
@@ -80,6 +102,7 @@ class Vein {
     if (this.branchCount >= this.maxBranches) {
       this.lifespan = 0;
     }
+    // if (this.lifespan === 0) return this.reverse()
 
     if (this.points.length < this.numPoints) {
       let lastPoint = this.points[this.points.length - 1];
@@ -92,6 +115,8 @@ class Vein {
         let branch = new Vein(lastPoint.x, lastPoint.y, this.branchCount + 1);
         branch.angle = this.angle + branchAngle;
         branch.speed = branchSpeed;
+        branch.lifespan = this.lifespan
+        branch.branchChance = this.branchChance * 0.3
         veins.push(branch);
       }
 
@@ -101,7 +126,6 @@ class Vein {
     this.lifespan--;
   }
   reverse() {
-    console.log('reversing')
     this.points.splice(this.points.length - 1, 1);
   }
   isFinished() {
