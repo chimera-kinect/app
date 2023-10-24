@@ -2,8 +2,10 @@ const express = require('express')
 const path = require('path')
 const fs = require('fs')
 
+require('dotenv').config()
+
 const app = express()
-const port = 6372
+const port = process.env.PORT 
 
 // Find all directories in the 'public' folder
 const publicPath = path.join(__dirname, 'public')
