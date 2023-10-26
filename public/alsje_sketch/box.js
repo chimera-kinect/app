@@ -7,7 +7,7 @@ let isDecreasing = false;
 let pressStartTime = 0;
 let releaseTime = 0;
 let isReleased = false;
-let animationSpeed = 0.1;
+let animationSpeed = 1;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -15,7 +15,7 @@ function setup() {
   maxRectHeight = windowHeight / 3;
   rectWidth = maxRectWidth;
   rectHeight = maxRectHeight;
-  preload();
+
 }
 
 function draw() {
