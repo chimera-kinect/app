@@ -31,7 +31,7 @@ function draw() {
       curX = coords.x
       curY = coords.y
       // if (dist(curX, curY, prevX, prevY) > 200) return !!! this removes weird lerping problems, but you have to slow down drawing to not make the lines break. up to you
-      fill(255, 192, 203, 100)
+      fill(152, 255, 152, 100)
       noStroke()
       for (let i = 0; i < 1; i += 0.05) {
         let interX = lerp(prevX, curX, i);
