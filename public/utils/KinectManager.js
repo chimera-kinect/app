@@ -65,6 +65,82 @@ class KinectManager {
     return this.currentFrame[(targetY * this.frameWidth) + targetX] >= this.pushThreshold
   }
 
+  // detectTouch() {
+  //   let max = this.currentFrame[0];
+  //   let maxIndex = 0;
+  //   let maxX = 0;
+  //   let maxY = 0;
+  //   const frameWidth = this.frameWidth; // Assuming you have access to frameWidth
+  //   const canvasWidth = this.canvasWidth; // Assuming you have access to canvasWidth
+  //   const canvasHeight = this.canvasHeight; // Assuming you have access to canvasHeight
+
+  //   for (let i = 1; i < this.currentFrame.length; i++) {
+  //       const x = i % frameWidth;
+  //       const y = Math.floor(i / frameWidth);
+  //       const targetX = Math.floor(x * (canvasWidth / frameWidth));
+  //       const targetY = Math.floor(y * (canvasHeight / this.frameHeight));
+
+  //       if (this.currentFrame[i] > max && this.currentFrame[i] > this.pushThreshold) {
+  //           max = this.currentFrame[i];
+  //           maxIndex = i;
+  //           maxX = targetX;
+  //           maxY = targetY;
+  //       }
+  //   }
+    
+  //   return maxX !== 0 && maxY !== 0 ? { x: maxX, y: maxY } : null;
+  // }
+
+  detectTouch() {
+    let max = this.currentFrame[0];
+    let maxIndex = 0;
+    let maxX = 0;
+    let maxY = 0;
+    const frameWidth = this.frameWidth; // Assuming you have access to frameWidth
+    const canvasWidth = this.canvasWidth; // Assuming you have access to canvasWidth
+    const canvasHeight = this.canvasHeight; // Assuming you have access to canvasHeight
+    const maxDiff = 10; // Adjust the maximum difference to suit your needs
+
+    for (let i = 1; i < this.currentFrame.length; i++) {
+        const x = i % frameWidth;
+        const y = Math.floor(i / frameWidth);
+        const targetX = Math.floor(x * (canvasWidth / frameWidth));
+        const targetY = Math.floor(y * (canvasHeight / this.frameHeight));
+
+        if (
+            this.currentFrame[i] > max &&
+            this.currentFrame[i] > this.pushThreshold &&
+            this.checkNeighboringPixels(this.currentFrame, i, frameWidth, maxDiff)
+        ) {
+            max = this.currentFrame[i];
+            maxIndex = i;
+            maxX = targetX;
+            maxY = targetY;
+        }
+    }
+    
+    return maxX !== 0 && maxY !== 0 ? { x: maxX, y: maxY } : null;
+}
+
+// Function to check neighboring pixels
+checkNeighboringPixels(frame, currentIndex, frameWidth, maxDiff) {
+    const currentPixelValue = frame[currentIndex];
+
+    for (let delta of [-1, 1, -frameWidth, frameWidth]) {
+        const neighborIndex = currentIndex + delta;
+        if (
+            neighborIndex >= 0 &&
+            neighborIndex < frame.length &&
+            Math.abs(frame[neighborIndex] - currentPixelValue) > maxDiff
+        ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
   generateFakeFrame() {
     const fakeFrame = new Uint8Array(this.frameWidth * this.frameHeight)
 
