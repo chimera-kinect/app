@@ -1,6 +1,8 @@
+import kinectManager from '../utils/KinectManager.js'
+
 var points = [];
 var EPSILON = 0.001;
-var density = 50;
+var density = 20;
 
 //Angle Bridage
 var mult
@@ -8,13 +10,15 @@ let img
 let pg
 
 function preload(){
-  img = loadImage('assets/maya.png');
+  img = loadImage('assets/bubble.png');
 }
 
 function setup() {
-  // blendMode(EXCLUSION);
+  //blendMode(EXCLUSION);
 
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth, windowHeight)
+  kinectManager.updateCanvasSize()
+  kinectManager.pushThreshold = 30
 
   pg = createGraphics(windowWidth, windowHeight); 
   // pg.image(img, 0, 0);
@@ -60,13 +64,16 @@ function curl(x, y){ //vortex based on image gradient.
 }
 
 function draw() {
-  // fill(0, 4); // looks cool with
+  if (!kinectManager.firstFrameReceived) return
+  //fill(0, 4);
   // rect(0, 0, width, height);
 	noStroke()
 
-
+ // const coords = kinectManager.detectTouch()
+  // if (!coords) return
 	// get colors from picture
 	for(var i=0; i<points.length; i++){
+//    if (dist(coords.x, coords.y, points[i].pos.x, points[i].pos.y) > 100) continue
     var p = points[i];
     var c = color(img.get(p.pos.x, p.pos.y));
     var r = red(c); //map(points[i].x, 0, width, r1, r2)
@@ -80,17 +87,24 @@ function draw() {
     var cvec = curl(p.pos.x, p.pos.y);
     var cvecMag = cvec.mag(); // Calculates magnitude (length) of vector; mag() is a shortcut for writing dist(0, 0, x, y).
     var vec = cvec.normalize();
-
+    
+    // if (coords) {
+    //   if (dist(coords.x, coords.y, p.pos.x, p.pos.y) < 100) {
+    //     p.color = color(255)
+    //   }
+    // }
+    // p.speed = map(coords.value, kinectManager.pushThreshold, 255, 0.5, 2.5)
     if (!mouseIsPressed) {
       p.color = color(r, g, b, a * pa);
       p.col = c;
       if (cvecMag > 500) {
-        p.vel = vec; // normailizing draws straight lines
+        p.vel = vec; 
       }
-      //perin noise version
+      //perin noise version - normailizing draws straight lines
       else {
         var angle = map(noise(p.pos.x * mult, p.pos.y * mult), 0, 1, 0, 720);
         p.vel = createVector(cos(angle) * p.speed, sin(angle) * p.speed);
+        p.col = color(255);
       }
     }
     p.pos.add(p.vel);
@@ -110,8 +124,14 @@ function mouseClicked(){
 	//
 }
 
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight)
+  kinectManager.updateCanvasSize()
+}
+
 window.preload = preload
 window.setup = setup
 window.curl = curl
 window.draw = draw
 window.mouseClicked = mouseClicked
+window.windowResized = windowResized
