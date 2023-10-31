@@ -15,7 +15,7 @@ function setup() {
   maxRectHeight = windowHeight / 3;
   rectWidth = maxRectWidth;
   rectHeight = maxRectHeight;
-  preload();
+
 }
 
 function draw() {
