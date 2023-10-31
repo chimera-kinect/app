@@ -7,7 +7,7 @@ let isDecreasing = false;
 let pressStartTime = 0;
 let releaseTime = 0;
 let isReleased = false;
-let animationSpeed = 1;
+let animationSpeed = 0.1;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
