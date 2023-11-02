@@ -119,7 +119,7 @@ class KinectManager {
         }
     }
     
-    return maxX !== 0 && maxY !== 0 ? { x: maxX, y: maxY } : null;
+    return maxX !== 0 && maxY !== 0 ? { x: maxX, y: maxY, value: max } : null;
 }
 
 // Function to check neighboring pixels

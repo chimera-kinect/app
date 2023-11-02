@@ -1,6 +1,6 @@
 var points = [];
 var EPSILON = 0.001;
-var density = 100;
+var density = 50;
 
 //Angle Bridage
 var mult
@@ -8,11 +8,11 @@ let img
 let pg
 
 function preload(){
-  img = loadImage('assets/bubble.png');
+  img = loadImage('assets/maya.png');
 }
 
 function setup() {
-  blendMode(OVERLAY);
+  // blendMode(EXCLUSION);
 
   createCanvas(windowWidth, windowHeight);
 
