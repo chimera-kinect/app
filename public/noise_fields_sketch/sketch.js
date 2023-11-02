@@ -1,7 +1,7 @@
 import kinectManager from '../utils/KinectManager.js'
 import Particle from './Particle.js'
 
-const PARTICLES_AMOUNT = 2000
+const PARTICLES_AMOUNT = 2500
 
 const particles = []
 
@@ -17,6 +17,8 @@ function setup() {
   setInterval(() => {
     noiseSeed(millis())
   }, 30000) // change things up every 30 seconds
+
+  strokeWeight(2)
 }
 
 function draw() {
