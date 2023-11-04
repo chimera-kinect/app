@@ -21,7 +21,7 @@ dirs.forEach(dir => {
 const chromeCapabilities = webdriver.Capabilities.chrome()
 const chromeOptions = {
   'excludeSwitches': ['enable-automation'],
-  'args': ['--kiosk']
+  'args': ['--kiosk', '--autoplay-policy=no-user-gesture-required']
 }
 chromeCapabilities.set('goog:chromeOptions', chromeOptions)
 
@@ -33,17 +33,25 @@ const driver = new webdriver.Builder()
 
 SerialPort.list()
   .then((list) => {
-    const path = list.find(elem => elem.serialNumber === process.env.ARDUINO_SN).path
+    const path = list.find(elem => elem.serialNumber === process.env.ARDUINO_SN)?.path
+    if (!path) throw new Error('Arduino not found. Have you set the ARDUINO_SN environment variable? Is the Arduino connected?')
     const port = new SerialPort({ path, baudRate: 9600 })
 
     const parser = new ReadlineParser()
-    port.pipe(parser).on('data', line => {
-      const intVal = parseInt(line)
+    port.pipe(parser).on('data', async line => {
+      const data = line.trim()
+      if (data === 'OFF') {
+        await driver.quit()
+        process.exit(0)
+      }
+      const intVal = parseInt(data)
       if (intVal >= sketches.length) return
-      driver.get(getSketchUrl(sketches[parseInt(line)]))
+      await driver.get(getSketchUrl(sketches[intVal]))
     })
   })
-  .catch((err) => {
+  .catch(async (err) => {
     console.error(err)
+    await driver.quit()
+    process.exit(1)
   })
 
