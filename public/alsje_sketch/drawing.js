@@ -8,7 +8,7 @@ let img
 let pg
 
 function preload(){
-  img = loadImage('assets/maya.png');
+  img = loadImage('assets/bubble.png');
 }
 
 function setup() {
@@ -24,7 +24,6 @@ function setup() {
   background(10);
   angleMode(DEGREES);
  // noiseDetail(2, 0.2); - see no difference
-
   var space = width / density;
   for (var x = 0; x < width; x += space) {
     for (var y = 0; y < height; y += space) {
@@ -34,6 +33,7 @@ function setup() {
       particle.speed = random(-1, 1) > 0 ? 2 : -2; //better result if move different direction.
       particle.size = random(1, 5);
       particle.col = color(img.get(particle.pos.x, particle.pos.y));
+      if (particle.pos.x > img.width || particle.pos.y > img.height) continue
       points.push(particle);
     }
   }
@@ -67,32 +67,64 @@ function draw() {
 
 	// get colors from picture
 	for(var i=0; i<points.length; i++){
-    var p = points[i];
-    var c = color(img.get(p.pos.x, p.pos.y));
-    var r = red(c); //map(points[i].x, 0, width, r1, r2)
-    var g = green(c); //map(points[i].y, 0, height, g1, g2)
-    var b = blue(c); //map(points[i].y, 0, width, b1, b2)
-    var a = map(dist(width / 2, height / 2, p.pos.x, p.pos.y), 0, 380, 255, 0);
-    var pc = p.col;
-    var pa = alpha(pc) / 255.0;
+    // set(points[i].pos.x, points[i].pos.y, points[i].col)
+    // continue
+    if (!mouseIsPressed) {
 
-    //curl noise
+          var p = points[i];
+          var c = color(img.get(p.pos.x, p.pos.y));
+          var r = red(c); //map(points[i].x, 0, width, r1, r2)
+          var g = green(c); //map(points[i].y, 0, height, g1, g2)
+          var b = blue(c); //map(points[i].y, 0, width, b1, b2)
+          var a = map(
+            dist(width / 2, height / 2, p.pos.x, p.pos.y),
+            0,
+            380,
+            255,
+            0
+          );
+          var pc = p.col;
+          var pa = alpha(pc) / 255.0;
+
+    } else {
+          var p = points[i];
+          var c = color(255)
+          var r = red(c); //map(points[i].x, 0, width, r1, r2)
+          var g = green(c); //map(points[i].y, 0, height, g1, g2)
+          var b = blue(c); //map(points[i].y, 0, width, b1, b2)
+          var a = map(
+            dist(width / 2, height / 2, p.pos.x, p.pos.y),
+            0,
+            380,
+            255,
+            0
+          );
+          var pc = p.col;
+          var pa = alpha(pc) / 255.0;
+    }
+
+   //curl noise
     var cvec = curl(p.pos.x, p.pos.y);
     var cvecMag = cvec.mag(); // Calculates magnitude (length) of vector; mag() is a shortcut for writing dist(0, 0, x, y).
     var vec = cvec.normalize();
 
-    if (!mouseIsPressed) {
-      p.color = color(r, g, b, a * pa);
-      p.col = c;
-      if (cvecMag > 500) {
-        p.vel = vec; // normailizing draws straight lines
-      }
-      //perin noise version
-      else {
-        var angle = map(noise(p.pos.x * mult, p.pos.y * mult), 0, 1, 0, 720);
-        p.vel = createVector(cos(angle) * p.speed, sin(angle) * p.speed);
-      }
+    p.color = color(r, g, b, a * pa);
+    p.col = c;
+
+    if (cvecMag > 500) {
+      p.vel = vec; // normailizing draws straight lines
     }
+
+
+    // if (!mouseIsPressed) {
+
+    //   //perin noise version
+    //   else {
+    //     var angle = map(noise(p.pos.x * mult, p.pos.y * mult), 0, 1, 0, 720);
+    //     p.vel = createVector(cos(angle) * p.speed, sin(angle) * p.speed);
+    //   }
+    // }
+
     p.pos.add(p.vel);
 
     if (dist(width / 2, height / 2, p.pos.x, p.pos.y) < 800) {
@@ -104,6 +136,7 @@ function draw() {
       p.pos = createVector(random(width), random(height));
     }
   }
+  // updatePixels()
 }
 
 function mouseClicked(){
