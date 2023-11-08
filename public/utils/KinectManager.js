@@ -54,8 +54,8 @@ class KinectManager {
 
   isCoordinatePushed(x, y) {
     // translates frame size to canvas size
-    const xRatio = this.frameWidth / this.canvasWidth
-    const yRatio = this.frameHeight / this.canvasHeight
+    const xRatio = this.canvasWidth / this.frameWidth
+    const yRatio = this.canvasHeight / this.frameHeight // this change has to be tested on canvas. might fix the ellipse issue. if it doesnt work, just revert to the old ratio
 
     const targetX = Math.floor(x * xRatio)
     const targetY = Math.floor(y * yRatio)
@@ -64,32 +64,6 @@ class KinectManager {
 
     return this.currentFrame[(targetY * this.frameWidth) + targetX] >= this.pushThreshold
   }
-
-  // detectTouch() {
-  //   let max = this.currentFrame[0];
-  //   let maxIndex = 0;
-  //   let maxX = 0;
-  //   let maxY = 0;
-  //   const frameWidth = this.frameWidth; // Assuming you have access to frameWidth
-  //   const canvasWidth = this.canvasWidth; // Assuming you have access to canvasWidth
-  //   const canvasHeight = this.canvasHeight; // Assuming you have access to canvasHeight
-
-  //   for (let i = 1; i < this.currentFrame.length; i++) {
-  //       const x = i % frameWidth;
-  //       const y = Math.floor(i / frameWidth);
-  //       const targetX = Math.floor(x * (canvasWidth / frameWidth));
-  //       const targetY = Math.floor(y * (canvasHeight / this.frameHeight));
-
-  //       if (this.currentFrame[i] > max && this.currentFrame[i] > this.pushThreshold) {
-  //           max = this.currentFrame[i];
-  //           maxIndex = i;
-  //           maxX = targetX;
-  //           maxY = targetY;
-  //       }
-  //   }
-    
-  //   return maxX !== 0 && maxY !== 0 ? { x: maxX, y: maxY } : null;
-  // }
 
   detectTouch() {
     let max = this.currentFrame[0];
