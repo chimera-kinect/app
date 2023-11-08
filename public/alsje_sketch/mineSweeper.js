@@ -1,3 +1,5 @@
+import kinectManager from "../utils/KinectManager.js";
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   rectMode(CENTER);
@@ -20,7 +22,7 @@ function draw() {
       // rotation
       let r = noise(x / 100, y / 100, frameCount / 250) * 150;
       // distance
-      let d = dist(mouseX, mouseY, x+50, y+50);
+      let d = dist(mouseX, mouseY, x + 50, y + 50);
       let w = map(d, 0, 1200, 0, 100) + 20;
       let h = map(d, 0, 1200, 0, 100) + 20;
 
@@ -43,13 +45,17 @@ function draw() {
       }
 
       rotate(r);
-      //rect(0, 0, 10, 10);
+      rect(0, 0, 10, 10);
       pop();
     }
   }
 }
 
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  kinectManager.updateCanvasSize();
+}
+
 window.setup = setup;
 window.draw = draw;
-
-
+window.windowResized = windowResized;
