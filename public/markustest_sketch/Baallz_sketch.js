@@ -3,7 +3,7 @@ let positions = []
 let speeds   = []
 let radius = 1
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(windowWidth, windowHeight);
   for(let i=0;i<nparticles;i++){
     let spd = createVector(random(-3,3),random(-3,3))
     let pos = createVector(width/2,height/2)
