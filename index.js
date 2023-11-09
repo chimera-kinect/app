@@ -54,4 +54,5 @@ app.use('/utils', express.static(path.join(__dirname, 'utils')))
 
 app.listen(port, () => {
   console.log(`Now listening on port ${port}`)
+  console.log(`http://localhost:${port}`)
 })

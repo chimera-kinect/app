@@ -1,3 +1,5 @@
+import kinectManager from "../utils/KinectManager.js"
+
 var words = ["Alsje", "Franco", "Massi", "Markus"];
 var fonts = [
   "Times",
@@ -5,7 +7,22 @@ var fonts = [
   "Courier New",
   "Georgia",
   "Verdana",
-  "Comic Sans MS",
+  "Arial Black",
+  "Tahoma",
+  "Trebuchet MS",
+  "Helvetica",
+  "Impact",
+  "Gill Sans",
+  "Times New Roman",
+  "Palatino",
+  "Baskerville",
+  "Andalé Mono",
+  "Courier",
+  "Lucida",
+  "Monaco",
+  "Bradley Hand",
+  "Brush Script MT",
+  "Luminari",
 ];
 
 var r;
@@ -13,16 +30,29 @@ var g;
 var b;
 var a;
 
-
 function setup() {
   colorMode(HSB, 360, 100, 100);
   createCanvas(windowWidth, windowHeight);
   background(255);
   textSize(24);
   noStroke();
+  kinectManager.pushThreshold = 30
 }
 
 function draw() {
+
+  if (!kinectManager.firstFrameReceived) return;
+
+  const coords = kinectManager.detectTouch()
+  if (coords) {
+    console.log("yep");
+    fill(0);
+    noStroke();
+    circle(coords.x, coords.y, kinectManager.pushThreshold);
+    loop();
+   } else {
+    console.log("nope");
+   }
 
   var wordGenerationSpeed = 5; // Initial word generation speed
   var generationCounter = 0; // Counter to track the number of generations
@@ -43,8 +73,6 @@ function draw() {
     }
   }
 
-  fill(255);
-  ellipse(mouseX, mouseY, windowWidth / 4);
 
   generationCounter++;
   if (generationCounter >= 100) {
