@@ -1,7 +1,7 @@
 import VerticalLine from "./VerticalLine.js"
 import kinectManager from '../utils/KinectManager.js'
 
-let osc
+let filter, noise
 const lines = []
 
 function setup() {
@@ -9,21 +9,26 @@ function setup() {
   kinectManager.updateCanvasSize()
   kinectManager.pushThreshold = 40
   frameRate(60)
-  for (let x = 1; x < width; x += 20) {
+  for (let x = 1; x < width; x += random(15, 35)) {
     lines.push(new VerticalLine(x))
   }
   stroke(255)
   noFill()
-  osc = new p5.SawOsc(90)
-  osc.start()
+  filter = new p5.LowPass()
+  noise = new p5.Noise('brown')
+  noise.amp(0.2)
+  noise.disconnect()
+  noise.connect(filter)
+  filter.freq(1000)
+  noise.start()
 }
 
 function draw() {
   if (!kinectManager.firstFrameReceived) return
   background(0)
   lines.forEach(line => line.draw(kinectManager))
-  const touchVal = kinectManager.detectTouch()?.value
-  touchVal ? osc.freq(map(touchVal, 0, 255, 90, 150), 0.1) : osc.freq(90, 0.1)
+  const touchVal = kinectManager.detectTouch(true)?.value
+  touchVal ? filter.freq(map(touchVal, 0, 255, 1000, 200), 0.1) : filter.freq(1000, 0.1)
 }
 
 function windowResized() {
