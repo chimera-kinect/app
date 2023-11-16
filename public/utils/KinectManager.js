@@ -10,6 +10,7 @@ class KinectManager {
     this.canvasWidth = null
     this.canvasHeight = null
     this.pushThreshold = 40
+    // mock frame vars
     this.mockCircleX = 0
     this.mockCircleY = 0
     this.mockCircleMaxRadius = 0
@@ -54,8 +55,8 @@ class KinectManager {
 
   isCoordinatePushed(x, y) {
     // translates frame size to canvas size
-    const xRatio = this.canvasWidth / this.frameWidth
-    const yRatio = this.canvasHeight / this.frameHeight // this change has to be tested on canvas. might fix the ellipse issue. if it doesnt work, just revert to the old ratio
+    const xRatio = this.frameWidth / this.canvasWidth 
+    const yRatio = this.frameHeight / this.canvasHeight  // this change has to be tested on canvas. might fix the ellipse issue. if it doesnt work, just revert to the old ratio
 
     const targetX = Math.floor(x * xRatio)
     const targetY = Math.floor(y * yRatio)
@@ -65,53 +66,48 @@ class KinectManager {
     return this.currentFrame[(targetY * this.frameWidth) + targetX] >= this.pushThreshold
   }
 
-  detectTouch() {
-    let max = this.currentFrame[0];
-    let maxIndex = 0;
-    let maxX = 0;
-    let maxY = 0;
-    const frameWidth = this.frameWidth; // Assuming you have access to frameWidth
-    const canvasWidth = this.canvasWidth; // Assuming you have access to canvasWidth
-    const canvasHeight = this.canvasHeight; // Assuming you have access to canvasHeight
-    const maxDiff = 10; // Adjust the maximum difference to suit your needs
+  detectTouch(ignorePushThreshold = false) {
+    let max = this.currentFrame[0]
+    let maxX = 0
+    let maxY = 0
+    const maxDiff = 10 // Adjust the maximum difference to suit your needs
 
     for (let i = 1; i < this.currentFrame.length; i++) {
-        const x = i % frameWidth;
-        const y = Math.floor(i / frameWidth);
-        const targetX = Math.floor(x * (canvasWidth / frameWidth));
-        const targetY = Math.floor(y * (canvasHeight / this.frameHeight));
+        const x = i % this.frameWidth
+        const y = Math.floor(i / this.frameWidth)
+        const targetX = Math.floor(x * (this.canvasWidth / this.frameWidth))
+        const targetY = Math.floor(y * (this.canvasHeight / this.frameHeight))
 
         if (
             this.currentFrame[i] > max &&
-            this.currentFrame[i] > this.pushThreshold &&
-            this.checkNeighboringPixels(this.currentFrame, i, frameWidth, maxDiff)
+            (ignorePushThreshold || this.currentFrame[i] > this.pushThreshold)
         ) {
-            max = this.currentFrame[i];
-            maxIndex = i;
-            maxX = targetX;
-            maxY = targetY;
+            if (!this.checkNeighboringPixels(this.currentFrame, i, this.frameWidth, maxDiff)) continue // only check neighboring pixels if current pixel is an actual max candidate. saves computing
+            max = this.currentFrame[i]
+            maxX = targetX
+            maxY = targetY
         }
     }
     
-    return maxX !== 0 && maxY !== 0 ? { x: maxX, y: maxY, value: max } : null;
+    return maxX !== 0 && maxY !== 0 ? { x: maxX, y: maxY, value: max } : null
 }
 
 // Function to check neighboring pixels
 checkNeighboringPixels(frame, currentIndex, frameWidth, maxDiff) {
-    const currentPixelValue = frame[currentIndex];
+    const currentPixelValue = frame[currentIndex]
 
     for (let delta of [-1, 1, -frameWidth, frameWidth]) {
-        const neighborIndex = currentIndex + delta;
+        const neighborIndex = currentIndex + delta
         if (
             neighborIndex >= 0 &&
             neighborIndex < frame.length &&
             Math.abs(frame[neighborIndex] - currentPixelValue) > maxDiff
         ) {
-            return false;
+            return false
         }
     }
 
-    return true;
+    return true
 }
 
 
