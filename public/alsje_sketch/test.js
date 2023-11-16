@@ -10,6 +10,8 @@ function setup() {
 function draw() {
   if (!kinectManager.firstFrameReceived) return;
   background(220);
+
+  
 }
 
 function windowResized() {
