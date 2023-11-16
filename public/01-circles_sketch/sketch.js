@@ -1,6 +1,6 @@
 import kinectManager from '../utils/KinectManager.js'
 
-let world, prevX, prevY
+let world, prevX, prevY, osc, env
 const pointFieldPos = new c2.PointField(new c2.Point(0, 0), 1)
 pointFieldPos.range(0, 300) // can set range of force!! deeper presses = more force
 const pointFieldNeg = new c2.PointField(new c2.Point(0, 0), -1)
@@ -43,7 +43,12 @@ function setup() {
   }
 
   world.addInteractionForce(new c2.Collision())
-  world.friction = 1 // no drag... do i like it?
+  world.friction = 1 // no drag
+
+  osc = new p5.SinOsc(500)
+  osc.amp(0)
+  osc.start()
+  env = new p5.Envelope(0, 0.3, 0, 1)
 }
 
 function draw() {
@@ -69,6 +74,7 @@ function draw() {
 
 function mousePressed() {
   applyForceAtPosition(mouseX, mouseY)
+  env.play(osc)
 }
 
 function mouseDragged() {

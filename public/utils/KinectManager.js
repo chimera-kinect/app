@@ -63,7 +63,7 @@ class KinectManager {
 
     if (targetX < 0 || targetX >= this.frameWidth || targetY < 0 || targetY >= this.frameHeight) return 0
 
-    return this.currentFrame[(targetY * this.frameWidth) + targetX] >= this.pushThreshold
+    return this.currentFrame[(targetY * this.frameWidth) + targetX] >= this.pushThreshold && this.currentFrame[(targetY * this.frameWidth) + targetX] <= 190
   }
 
   detectTouch(ignorePushThreshold = false) {
@@ -82,7 +82,7 @@ class KinectManager {
             this.currentFrame[i] > max &&
             (ignorePushThreshold || this.currentFrame[i] > this.pushThreshold)
         ) {
-            if (!this.checkNeighboringPixels(this.currentFrame, i, this.frameWidth, maxDiff)) continue // only check neighboring pixels if current pixel is an actual max candidate. saves computing
+            if (this.currentFrame[i] > 190) continue // only check neighboring pixels if current pixel is an actual max candidate. saves computing
             max = this.currentFrame[i]
             maxX = targetX
             maxY = targetY
@@ -92,24 +92,23 @@ class KinectManager {
     return maxX !== 0 && maxY !== 0 ? { x: maxX, y: maxY, value: max } : null
 }
 
-// Function to check neighboring pixels
-checkNeighboringPixels(frame, currentIndex, frameWidth, maxDiff) {
-    const currentPixelValue = frame[currentIndex]
+// // Function to check neighboring pixels
+// checkNeighboringPixels(frame, currentIndex, frameWidth, maxDiff) {
+//     const currentPixelValue = frame[currentIndex]
 
-    for (let delta of [-1, 1, -frameWidth, frameWidth]) {
-        const neighborIndex = currentIndex + delta
-        if (
-            neighborIndex >= 0 &&
-            neighborIndex < frame.length &&
-            Math.abs(frame[neighborIndex] - currentPixelValue) > maxDiff
-        ) {
-            return false
-        }
-    }
+//     for (let delta of [-1, 1, -frameWidth, frameWidth]) {
+//         const neighborIndex = currentIndex + delta
+//         if (
+//             neighborIndex >= 0 &&
+//             neighborIndex < frame.length &&
+//             Math.abs(frame[neighborIndex] - currentPixelValue) > maxDiff
+//         ) {
+//             return false
+//         }
+//     }
 
-    return true
-}
-
+//     return true
+// }
 
   generateFakeFrame() {
     const fakeFrame = new Uint8Array(this.frameWidth * this.frameHeight)

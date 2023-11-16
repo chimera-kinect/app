@@ -27,8 +27,8 @@ function draw() {
   if (!kinectManager.firstFrameReceived) return
   background(0)
   lines.forEach(line => line.draw(kinectManager))
-  const touchVal = kinectManager.detectTouch(true)?.value
-  touchVal ? filter.freq(map(touchVal, 0, 255, 1000, 200), 0.1) : filter.freq(1000, 0.1)
+  const touchVal = kinectManager.detectTouch(true)?.value ?? 0
+  filter.freq(map(touchVal, 0, 255, 1000, 0), 0.3)
 }
 
 function windowResized() {

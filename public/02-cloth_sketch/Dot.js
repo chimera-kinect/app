@@ -1,7 +1,7 @@
 const DT = 0.1 // delta time step
 const EPS = 0.00000001 // epsilon
 const DAMPING = 0.85 // bounce damping
-const DELTA = 100 // width of the "deepening"
+let DELTA = 100 // width of the "deepening"
 const KGrid = 10.0 // elastic value of the grid
 const KClick = 10.6 // elastic value of the click
 
@@ -40,6 +40,7 @@ export default class Dot{
     // if(mouseIsPressed) res.add(spring_force(mouseX, mouseY, this.x, this.y, intensity)) // DEBUG
     if(coords) {
       const d = dist(coords.x, coords.y, this.x, this.y)
+      DELTA = map(coords.value, 40, 190, 100, 400)
       const intensity = KClick*exp(-d*d/(DELTA*DELTA))
       res.add(spring_force(coords.x, coords.y, this.x, this.y, intensity)) // TODO: change DELTA using coords.value
     } 
