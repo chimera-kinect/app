@@ -55,8 +55,8 @@ class KinectManager {
 
   isCoordinatePushed(x, y) {
     // translates frame size to canvas size
-    const xRatio = this.canvasWidth / this.frameWidth
-    const yRatio = this.canvasHeight / this.frameHeight // this change has to be tested on canvas. might fix the ellipse issue. if it doesnt work, just revert to the old ratio
+    const xRatio = this.frameWidth / this.canvasWidth 
+    const yRatio = this.frameHeight / this.canvasHeight  // this change has to be tested on canvas. might fix the ellipse issue. if it doesnt work, just revert to the old ratio
 
     const targetX = Math.floor(x * xRatio)
     const targetY = Math.floor(y * yRatio)
