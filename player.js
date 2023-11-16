@@ -21,7 +21,7 @@ dirs.forEach(dir => {
 const chromeCapabilities = webdriver.Capabilities.chrome()
 const chromeOptions = {
   'excludeSwitches': ['enable-automation'],
-  'args': ['--kiosk', '--autoplay-policy=no-user-gesture-required']
+  'args': ['--autoplay-policy=no-user-gesture-required', '--window-position=5000,0', '--kiosk']
 }
 chromeCapabilities.set('goog:chromeOptions', chromeOptions)
 
@@ -29,7 +29,6 @@ const driver = new webdriver.Builder()
   .forBrowser('chrome')
   .withCapabilities(chromeCapabilities)
   .build()
-
 
 SerialPort.list()
   .then((list) => {
