@@ -9,9 +9,10 @@ let displayWord = true;
 let displayTime = 3;
 let displayTimer;
 let prevTouchX, prevTouchY;
+// let osc, playing, freq, amp;
 
 function setup() {
-  createCanvas(1080,800);
+  createCanvas(windowWidth,windowHeight);
   frameRate(30);
   kinectManager.updateCanvasSize();
   kinectManager.pushThreshold = 40;
@@ -20,17 +21,15 @@ function setup() {
   background(0);
   particles.init();
   displayTimer = millis() + displayTime * 1000;
+  // osc = new p5.Oscillator('sine');
 }
 
-//hello 
-// lets try firefox
-// download it on the windows pc and open localhost:5000 there please copy that alsje says it is too much effort and we should just use chrome? but i dont know
-// let me actually first try it here
 
 
 function draw() {
   if (!kinectManager.firstFrameReceived) return;
   background(0, 5);
+  
 
   if (displayWord) {
     displayStartWord();
@@ -38,6 +37,10 @@ function draw() {
     drawParticles();
   }
 }
+
+// function playOscillator() {
+
+// }
 
 function displayStartWord() {
   fill(255);
@@ -58,13 +61,19 @@ function drawParticles() {
   strokeWeight(coords?.value || kinectManager.pushThreshold);
 
   if (coords) {
-    // Use lerp to interpolate between previous and current touch coordinates
-    const lerpedX = lerp(prevTouchX, coords.x, 0.2); // Adjust the third parameter for the amount of interpolation (0.2 is just a starting point)
+ 
+line(prevTouchX || coords.x, prevTouchY || coords.y, coords.x, coords.y);
+    prevTouchX = coords.x;
+    prevTouchY = coords.y;
+
+    const lerpedX = lerp(prevTouchX, coords.x, 0.2);
     const lerpedY = lerp(prevTouchY, coords.y, 0.2);
 
     line(prevTouchX, prevTouchY, lerpedX, lerpedY);
     prevTouchX = lerpedX;
     prevTouchY = lerpedY;
+
+    
   } else {
     prevTouchX = null;
     prevTouchY = null;
@@ -83,7 +92,7 @@ function createParticle() {
     x: width / 2, //position
     y: height / 2, //position
     angle: random(360),
-    step: random(2, 10) //increase spread/speed?
+    step: random(2, 5) //increase spread/speed?
   };
 }
 

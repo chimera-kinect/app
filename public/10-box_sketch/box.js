@@ -3,10 +3,11 @@ import kinectManager from "../utils/KinectManager.js";
 let x, y, lx, ly, csw, tsw;
 
 function preload() {
-  lx = width / 2;
-	ly = height / 2;
-  x = width / 2;
-	y = height / 2;
+  // lx = width / 2;
+	// ly = height / 2;
+  // x = width / 2;
+	// y = height / 2;
+  // now all of a sudden works in setup and not here :/
 }
 
 function setup() {
@@ -15,7 +16,12 @@ function setup() {
   kinectManager.pushThreshold = 40
   // fix stroke
   stroke(0, 0, 255, 200);
-  frameRate(40);
+  frameRate(30);
+  lx = width / 2;
+  ly = height / 2;
+  x = width / 2;
+  y = height / 2;
+  strokeWeight(3);
 }
 
 function draw() {
@@ -24,8 +30,8 @@ function draw() {
   if (!kinectManager.firstFrameReceived) return;
   const coords = kinectManager.detectTouch();
 
-	x=coords?.x || lx;
-	y=coords?.y || ly;
+	x = coords?.x || lx;
+	y = coords?.y || ly;
   if (dist(x, y, lx, ly) > 1) {
     lx=lerp(lx,x,0.15);
 	  ly=lerp(ly,y,0.15);
@@ -34,10 +40,11 @@ function draw() {
     ly = y
   }
 
-  tsw = map(coords?.value || kinectManager.pushThreshold, kinectManager.pushThreshold, 190, 2, 0.1);
-  csw = lerp(csw, tsw, 0.15);
-  strokeWeight(2);
-  console.log(csw);
+  let depth = coords?.value || 30;
+  let tsw = map(depth, 190, 3, 0.1, true);
+ // let csw = lerp(csw, tsw, 0.1);
+ // lerp not working to save my life
+  strokeWeight(tsw);
 
   for(var i=0;i<width/3;i++){
 		line(i*3, 0, lx, ly);
