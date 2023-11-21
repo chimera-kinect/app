@@ -1,7 +1,7 @@
 import kinectManager from "../utils/KinectManager.js";
 
 const particleColor = new Uint8Array([255, 255, 255])
-const particlesNum = 5000;
+const particlesNum = 3000;
 const sensorOffset = 10;
 const clockwise = 50;
 const counter = -30;
@@ -11,7 +11,7 @@ let displayTimer;
 let prevTouchX, prevTouchY;
 
 function setup() {
-  createCanvas(1920,800);
+  createCanvas(1080,800);
   frameRate(30);
   kinectManager.updateCanvasSize();
   kinectManager.pushThreshold = 40;
@@ -45,7 +45,6 @@ function displayStartWord() {
   textStyle(BOLD);
   textAlign(CENTER, CENTER);
   text("MYCELIUM", width / 2, height / 2);
-
   
   if (millis() > displayTimer) {
     displayWord = false;
@@ -59,9 +58,13 @@ function drawParticles() {
   strokeWeight(coords?.value || kinectManager.pushThreshold);
 
   if (coords) {
-    line(prevTouchX || coords.x, prevTouchY || coords.y, coords.x, coords.y);
-    prevTouchX = coords.x;
-    prevTouchY = coords.y;
+    // Use lerp to interpolate between previous and current touch coordinates
+    const lerpedX = lerp(prevTouchX, coords.x, 0.2); // Adjust the third parameter for the amount of interpolation (0.2 is just a starting point)
+    const lerpedY = lerp(prevTouchY, coords.y, 0.2);
+
+    line(prevTouchX, prevTouchY, lerpedX, lerpedY);
+    prevTouchX = lerpedX;
+    prevTouchY = lerpedY;
   } else {
     prevTouchX = null;
     prevTouchY = null;
@@ -77,8 +80,8 @@ function drawParticles() {
 
 function createParticle() {
   return {
-    x: width / 1, //position
-    y: height / 1, //position
+    x: width / 2, //position
+    y: height / 2, //position
     angle: random(360),
     step: random(2, 10) //increase spread/speed?
   };
@@ -96,8 +99,8 @@ const particles = {
 
   smell(particle, direction) {
     const aim = particle.angle + direction;
-    let x = 0 | (particle.x + sensorOffset * cos(aim) * 2);
-    let y = 0 | (particle.y + sensorOffset * sin(aim) * 2);
+    let x = 0 | (particle.x + sensorOffset * cos(aim) * 1.5);
+    let y = 0 | (particle.y + sensorOffset * sin(aim) * 1.5);
     x = (x + width) % width;
     y = (y + height) % height;
 
@@ -141,4 +144,3 @@ function windowResized() {
 window.setup = setup;
 window.draw = draw;
 window.windowResized = windowResized;
-window.keyPressed = keyPressed;
