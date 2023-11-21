@@ -36,7 +36,7 @@ function draw() {
 
   tsw = map(coords?.value || kinectManager.pushThreshold, kinectManager.pushThreshold, 190, 2, 0.1);
   csw = lerp(csw, tsw, 0.15);
-  strokeWeight(csw);
+  strokeWeight(2);
   console.log(csw);
 
   for(var i=0;i<width/3;i++){

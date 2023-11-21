@@ -35,11 +35,11 @@ export default class Dot{
     this.y0 = this.y
   }
   
-  update(kinectManager){
+  update(coords){
     const res = createVector(0, 0)
 
     // if(mouseIsPressed) res.add(spring_force(mouseX, mouseY, this.x, this.y, intensity)) // DEBUG
-    const touchVal = kinectManayourger.getCoords(this.x, this.y)
+    const touchVal = coords?.value || 0
     if(touchVal !== 0) {
       const d = dist(coords.x, coords.y, this.x, this.y)
       const DELTA = map(coords.value, 40, 190, MINDELTA, MAXDELTA)

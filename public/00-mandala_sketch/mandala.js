@@ -13,9 +13,11 @@ function setup() {
   strokeWeight(2);
   frameRate(20);
   init();
+  background(255);
 }
 
 function draw() {
+  
   push();
 
   if (!kinectManager.firstFrameReceived) return;
@@ -62,15 +64,15 @@ function init() {
   if (!kinectManager.firstFrameReceived) return;
   // Get value from Kinect manager and scale it to the desired range
   let baseSize = kinectManager.detectTouch()?.value || 1; // Default to 0 if detectTouch() is undefined
-  let scaledBaseSize = map(baseSize, 50, 190, 1, 100); // Scale to a range between 30 and 100
+  let scaledBaseSize = map(baseSize, 40, 190, 1, 100); // Scale to a range between 30 and 100
 
   stroke(floor(random(10)) * 10, 90, 90, 20);
   strokeWeight(floor(scaledBaseSize));
 
-  if (scaledBaseSize > 30) {
+  if (baseSize > 100) {
     blendMode(MULTIPLY);
   } else {
-    blendMode(SCREEN);
+    blendMode(BLEND);
   }
 }
 

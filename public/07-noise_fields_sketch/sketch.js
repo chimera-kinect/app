@@ -42,7 +42,6 @@ function keyPressed() {
 }
 
 window.keyPressed = keyPressed
-
 window.setup = setup
 window.draw = draw
 window.windowResized = windowResized

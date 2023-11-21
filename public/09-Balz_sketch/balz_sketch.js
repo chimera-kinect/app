@@ -20,6 +20,7 @@ function setup() {
     osc.start();
   }
   
+  
   function draw() {
     if (!kinectManager.firstFrameReceived) return
     background(20);
@@ -116,9 +117,6 @@ class Ball {
     this.lerpFrameEnd = frameCount + frameRate() * this.lerpDuration
     this.targetCraziness = val
   }
-
-  
-
 }
 
 window.setup = setup;

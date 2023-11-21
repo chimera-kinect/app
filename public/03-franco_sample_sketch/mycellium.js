@@ -11,7 +11,7 @@ let displayTimer;
 let prevTouchX, prevTouchY;
 
 function setup() {
-  createCanvas(1080, 900);
+  createCanvas(1920,800);
   frameRate(30);
   kinectManager.updateCanvasSize();
   kinectManager.pushThreshold = 40;
@@ -21,6 +21,12 @@ function setup() {
   particles.init();
   displayTimer = millis() + displayTime * 1000;
 }
+
+//hello 
+// lets try firefox
+// download it on the windows pc and open localhost:5000 there please copy that alsje says it is too much effort and we should just use chrome? but i dont know
+// let me actually first try it here
+
 
 function draw() {
   if (!kinectManager.firstFrameReceived) return;
@@ -71,8 +77,8 @@ function drawParticles() {
 
 function createParticle() {
   return {
-    x: width / 2, //position
-    y: height / 2, //position
+    x: width / 1, //position
+    y: height / 1, //position
     angle: random(360),
     step: random(2, 10) //increase spread/speed?
   };
@@ -135,3 +141,4 @@ function windowResized() {
 window.setup = setup;
 window.draw = draw;
 window.windowResized = windowResized;
+window.keyPressed = keyPressed;
