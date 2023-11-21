@@ -34,11 +34,11 @@ function draw() {
   
   push()
 
-  const coords = kinectManager.detectTouch()
+  // const coords = kinectManager.detectTouch()
   
   for(let i=0;i<N;i++){
     for(let j=0;j<N;j++){
-      array[i][j].update(coords)
+      array[i][j].update(kinectManager)
     }
   }
   

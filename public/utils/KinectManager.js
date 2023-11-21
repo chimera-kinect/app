@@ -90,25 +90,20 @@ class KinectManager {
     }
     
     return maxX !== 0 && maxY !== 0 ? { x: maxX, y: maxY, value: max } : null
-}
+  }
 
-// // Function to check neighboring pixels
-// checkNeighboringPixels(frame, currentIndex, frameWidth, maxDiff) {
-//     const currentPixelValue = frame[currentIndex]
+  getCoords(x, y) {
+    const xRatio = this.frameWidth / this.canvasWidth 
+    const yRatio = this.frameHeight / this.canvasHeight  // this change has to be tested on canvas. might fix the ellipse issue. if it doesnt work, just revert to the old ratio
 
-//     for (let delta of [-1, 1, -frameWidth, frameWidth]) {
-//         const neighborIndex = currentIndex + delta
-//         if (
-//             neighborIndex >= 0 &&
-//             neighborIndex < frame.length &&
-//             Math.abs(frame[neighborIndex] - currentPixelValue) > maxDiff
-//         ) {
-//             return false
-//         }
-//     }
+    const targetX = Math.floor(x * xRatio)
+    const targetY = Math.floor(y * yRatio)
 
-//     return true
-// }
+    if (targetX < 0 || targetX >= this.frameWidth || targetY < 0 || targetY >= this.frameHeight) return 0
+
+    return (this.currentFrame[(targetY * this.frameWidth) + targetX] <= 190) ? 0 : this.currentFrame[(targetY * this.frameWidth) + targetX]
+
+  }
 
   generateFakeFrame() {
     const fakeFrame = new Uint8Array(this.frameWidth * this.frameHeight)

@@ -1,7 +1,8 @@
 const DT = 0.1 // delta time step
 const EPS = 0.00000001 // epsilon
-const DAMPING = 0.85 // bounce damping
-let DELTA = 100 // width of the "deepening"
+const DAMPING = 0.75 // bounce damping
+const MINDELTA = 100
+const MAXDELTA = 400
 const KGrid = 10.0 // elastic value of the grid
 const KClick = 10.6 // elastic value of the click
 
@@ -27,22 +28,23 @@ export default class Dot{
     this.vx = 0
     this.vy = 0
     
-    this.x = map(i, 0, N-1, 0, max(width, height))
-    this.y = map(j, 0, N-1, 0, max(width, height))
+    this.x = map(i, 0, N-1, -200, max(width, height) + 200)
+    this.y = map(j, 0, N-1, -200, max(width, height) + 200)
     
     this.x0 = this.x
     this.y0 = this.y
   }
   
-  update(coords){
+  update(kinectManager){
     const res = createVector(0, 0)
 
     // if(mouseIsPressed) res.add(spring_force(mouseX, mouseY, this.x, this.y, intensity)) // DEBUG
-    if(coords) {
+    const touchVal = kinectManayourger.getCoords(this.x, this.y)
+    if(touchVal !== 0) {
       const d = dist(coords.x, coords.y, this.x, this.y)
-      DELTA = map(coords.value, 40, 190, 100, 400)
+      const DELTA = map(coords.value, 40, 190, MINDELTA, MAXDELTA)
       const intensity = KClick*exp(-d*d/(DELTA*DELTA))
-      res.add(spring_force(coords.x, coords.y, this.x, this.y, intensity)) // TODO: change DELTA using coords.value
+      res.add(spring_force(coords.x, coords.y, this.x, this.y, intensity))
     } 
     res.add(spring_force(this.x0, this.y0, this.x, this.y, KGrid))
 

@@ -35,6 +35,14 @@ function windowResized() {
   kinectManager.updateCanvasSize()
 }
 
+function keyPressed() {
+  if (key === 's') {
+    saveCanvas()
+  }
+}
+
+window.keyPressed = keyPressed
+
 window.setup = setup
 window.draw = draw
 window.windowResized = windowResized
