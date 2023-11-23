@@ -1,11 +1,29 @@
 const express = require('express')
+const bodyParser = require('body-parser')
 const path = require('path')
 const fs = require('fs')
+const { exec } = require('child_process')
 
 require('dotenv').config()
 
 const app = express()
 const port = process.env.PORT 
+
+if (process.argv.includes('--spotify')) {
+  exec(`spotify status`, (error, _stdout, _stderr) => {
+    if (error) {
+      console.error('Spotify is not active')
+      process.exit(1)
+    }
+
+    exec(`spotify repeat track`, (error, _stdout, _stderr) => {
+      if (error) {
+        console.error('Weird Spotify error, shouldn`t happen, lol')
+        process.exit(1)
+      }
+    })
+  })
+}
 
 // Find all directories in the 'public' folder
 const publicPath = path.join(__dirname, 'public')
@@ -51,6 +69,38 @@ dirs.forEach(dir => {
 })
 
 app.use('/utils', express.static(path.join(__dirname, 'utils')))
+
+const jsonParser = bodyParser.json()
+
+app.post('/play', jsonParser, (req, res) => {
+  const { song } = req.body
+
+  exec(`spotify play "${song}"`, (error, stdout, stderr) => {
+    if (error) return res.status(500).send(error.message)
+    if (stderr) return res.status(500).send(stderr)
+    res.send(stdout)
+  })
+})
+
+app.post('/pause', (_req, res) => {
+  exec(`spotify pause`, (error, stdout, stderr) => {
+    if (error) return res.status(500).send(error.message)
+    if (stderr) return res.status(500).send(stderr)
+    res.send(stdout)
+  })
+})
+
+if (process.argv.includes('--spotify')) {
+  // keep spotify session alive
+  setInterval(() => {
+    exec(`spotify repeat track`, (error, _stdout, _stderr) => {
+      if (error) {
+        console.error('Spotify is not active')
+      }
+      console.log('Spotify session alive...')
+    })
+  }, 1000 * 60)
+}
 
 app.listen(port, () => {
   console.log(`Now listening on port ${port}`)
