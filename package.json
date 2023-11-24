@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "spotify": "node index.js --spotify"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   },
   "homepage": "https://github.com/chimera-kinect/app#readme",
   "dependencies": {
+    "body-parser": "^1.20.2",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "parser-readline": "^1.0.2",

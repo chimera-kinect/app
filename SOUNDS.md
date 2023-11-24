@@ -43,4 +43,11 @@ function draw() {
     if (coords.value >= kinectManager.pushThreshold)
       audio.play()
 }
+
+For Spotify audio:
+
+`pip install spotify-cli`
+`spotify auth login` -> if it errors out, check [this](https://github.com/ledesmablt/spotify-cli/issues/23)
+
+Open Spotify on pc, start a random song and pause ( spotify-cli needs an "active" session and that's the only way to get it )
 ```

@@ -1,5 +1,6 @@
 import Dot from './Dot.js'
 import kinectManager from '../utils/KinectManager.js'
+// import Spotify from '../utils/Spotify.js'
 
 const N = 50
 const array = new Array(N)
@@ -25,7 +26,8 @@ function setup() {
       array[i][j] = new Dot(i, j, N)
     }
   }
-  
+
+  // Spotify.play('claire de lune debussy')
 }
 
 function draw() {
